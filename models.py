@@ -1,8 +1,6 @@
 from flask_login import UserMixin
 from exts import mongo
-from pymongo import WriteConcern
 from pymongo.errors import PyMongoError
-from pymongo.client_session import ClientSession
 
 class User(UserMixin):
     '''
@@ -26,21 +24,21 @@ class User(UserMixin):
             return User(user_data['username'])
         return None
 
-    @staticmethod
-    def get_all():
-        return list(mongo.db.users.find())
+    @classmethod
+    def get_all(cls):
+        return [cls(user_data['username']) for user_data in mongo.db.users.find()]
 
     def _get_keywords(self):
         return mongo.db.keywords.find_one({"username": self.username})["keywords"]
+
+    def get_keywords(self):
+        return self.keywords
     
     def set_keywords(self, keywords):
         self.keywords = keywords
-        with mongo.cx.start_session() as session:
-            with session.start_transaction(write_concern=WriteConcern("majority")):
-                try:
-                    mongo.db.keywords.delete_many({"username": self.username}, session=session)
-                    for keyword in keywords:
-                        mongo.db.keywords.insert_one({"username": self.username, "keyword": keyword}, session=session)
-                except PyMongoError:
-                    session.abort_transaction()
-                    raise
+        try:
+            mongo.db.keywords.update_one({"username": self.username}, {"$set": {"keywords": keywords}}, upsert=True)
+        except PyMongoError as e:
+            print(e)
+            return False
+        return True
