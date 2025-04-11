@@ -8,9 +8,10 @@ from exts import mongo
 from models import User
 from algorithms import exact_match
 
-user_blueprint = Blueprint('user_blueprint', __name__)
+user_blueprint = Blueprint("user_blueprint", __name__)
 
-@user_blueprint.route('/users', methods=['GET'])
+
+@user_blueprint.route("/users", methods=["GET"])
 def index():
     users = User.get_all()
     usernames = [user.username for user in users]
