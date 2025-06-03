@@ -21,14 +21,14 @@ Request: {
     "end_index": int (inclusive)
 }
 Response: {
-    "articles": {
+    "articles": [{
         "arxiv_id": str,
         "added_time": int(timestamp),
         "submitted_time": int(timestamp),
         "title": str,
         "abstract": str,
         "authors": list[str],
-    }
+    }]
 }
 ```
 

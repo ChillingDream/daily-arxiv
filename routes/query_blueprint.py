@@ -43,4 +43,4 @@ def em_query():
         x.pop("_id")
         x.pop("category")
 
-    return jsonify(articles)
+    return jsonify({"ariticles": articles})
