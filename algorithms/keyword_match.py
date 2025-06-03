@@ -7,7 +7,7 @@ def exact_match(collection, keywords: list[str], restrictions: list[dict] = None
         "$text": {
             "$search": " ".join(['"' + x + '"' for x in keywords]),
             "$caseSensitive": False,
-            "$diacriticSensitive": False
+            "$diacriticSensitive": False,
         }
     }
 

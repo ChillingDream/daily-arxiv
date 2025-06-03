@@ -62,7 +62,11 @@ if __name__ == "__main__":
 
     start_time = int(datetime(2020, 1, 1).timestamp())
     end_time = int(datetime(2025, 3, 1).timestamp())
-    test_post_query(["large language model", "reasoning", "reinforcement learning"], start_time, end_time)
+    test_post_query(
+        ["large language model", "reasoning", "reinforcement learning"],
+        start_time,
+        end_time,
+    )
 
     test_get_keywords("liziheng")
     test_post_keywords("arkcia", ["meta-learning", "Function Vector"])
