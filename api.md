@@ -57,3 +57,65 @@ Response: {
     "success": bool
 }
 ```
+
+用户已读论文获取  
+URL: ```/users/read_papers```  
+Method: ```GET```
+```python
+Request: {
+    "username": str,
+}
+Response: {
+    "arxiv_ids": list[str]
+}
+```
+
+用户已读论文设置  
+URL: ```/users/read_papers```  
+Method: ```POST```
+```python
+Request: {
+    "username": str,
+    "arxiv_ids": list[str]
+}
+Response: {
+    "success": bool
+}
+```
+
+用户收藏论文获取  
+URL: ```/users/favorite_papers```  
+Method: ```GET```
+```python
+Request: {
+    "username": str,
+}
+Response: {
+    "arxiv_ids": list[str]
+}
+```
+
+用户收藏论文设置  
+URL: ```/users/favorite_papers```  
+Method: ```POST```
+```python
+Request: {
+    "username": str,
+    "arxiv_ids": list[str]
+}
+Response: {
+    "success": bool
+}
+```
+
+论文分析
+URL: ```/analysis```
+Method: ```POST```
+```python
+Request: {
+    "arxiv_id": str,
+    "section": str
+}
+Response: {
+    "analysis": str
+}

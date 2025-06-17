@@ -1,1 +1,5 @@
 MONGO_URI: 'mongodb://localhost:21117/daily_arxiv'
+llm_client:
+  url: https://api.uniapi.io/v1
+  api_key: 
+  model_name: deepseek-v3-0324
