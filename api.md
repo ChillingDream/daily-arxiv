@@ -1,121 +1,159 @@
-用户相关
+# API Documentation
 
-URL: ```/users```
-Method: ```GET```
-```python
-Response: {
-    "usernames": list[str]
-}
-```
+## User Endpoints
 
-关键词匹配查询
+### Get All Users
 
-URL: ```/query```  
-Method: ```POST```
-```python
-Request: {
-    "query": list[str],
-    "start_time": int (timestamp),
-    "end_time": int (timestamp),
-    "start_index": int,
-    "end_index": int (inclusive)
-}
-Response: {
-    "articles": [{
-        "arxiv_id": str,
-        "added_time": int(timestamp),
-        "submitted_time": int(timestamp),
-        "title": str,
-        "abstract": str,
-        "authors": list[str],
-    }]
-}
-```
+-   **URL:** `/users`
+-   **Method:** `GET`
+-   **Success Response:**
+    ```json
+    {
+        "usernames": ["user1", "user2"]
+    }
+    ```
 
-用户关键词获取
+## Paper Endpoints
 
-URL: ```/keywords```  
-Method: ```GET```
-```python
-Request: {
-    "username": str
-}
-Response: {
-    "keywords": list[str]
-}
-```
+### Query Papers by Keywords
 
-用户关键词设置  
-URL: ```/keywords```  
-Method: ```POST```
-```python
-Request: {
-    "username": str,
-    "keywords": list[str]
-}
-Response: {
-    "success": bool
-}
-```
+-   **URL:** `/query`
+-   **Method:** `POST`
+-   **Request Body:**
+    ```json
+    {
+        "query": ["machine learning", "attention"],
+        "start_time": 1672531200,
+        "end_time": 1675209600,
+        "start_index": 0,
+        "end_index": 10
+    }
+    ```
+-   **Success Response:**
+    ```json
+    {
+        "articles": [
+            {
+                "arxiv_id": "2301.00001",
+                "added_time": 1672531200,
+                "submitted_time": 1672531100,
+                "title": "Example Paper Title",
+                "abstract": "This is an example abstract.",
+                "authors": ["Author One", "Author Two"]
+            }
+        ]
+    }
+    ```
 
-用户已读论文获取  
-URL: ```/users/read_papers```  
-Method: ```GET```
-```python
-Request: {
-    "username": str,
-}
-Response: {
-    "arxiv_ids": list[str]
-}
-```
+### Analyze Paper Section
 
-用户已读论文设置  
-URL: ```/users/read_papers```  
-Method: ```POST```
-```python
-Request: {
-    "username": str,
-    "arxiv_ids": list[str]
-}
-Response: {
-    "success": bool
-}
-```
+-   **URL:** `/analysis`
+-   **Method:** `POST`
+-   **Request Body:**
+    ```json
+    {
+        "arxiv_id": "2301.00001",
+        "section": "abstract"
+    }
+    ```
+-   **Success Response:**
+    ```json
+    {
+        "analysis": "This is the analysis of the requested section."
+    }
+    ```
 
-用户收藏论文获取  
-URL: ```/users/favorite_papers```  
-Method: ```GET```
-```python
-Request: {
-    "username": str,
-}
-Response: {
-    "arxiv_ids": list[str]
-}
-```
+## User-Specific Endpoints
 
-用户收藏论文设置  
-URL: ```/users/favorite_papers```  
-Method: ```POST```
-```python
-Request: {
-    "username": str,
-    "arxiv_ids": list[str]
-}
-Response: {
-    "success": bool
-}
-```
+### Get User Keywords
 
-论文分析
-URL: ```/analysis```
-Method: ```POST```
-```python
-Request: {
-    "arxiv_id": str,
-    "section": str
-}
-Response: {
-    "analysis": str
-}
+-   **URL:** `/keywords`
+-   **Method:** `GET`
+-   **Query Parameters:**
+    -   `username`: string
+-   **Success Response:**
+    ```json
+    {
+        "keywords": ["keyword1", "keyword2"]
+    }
+    ```
+
+### Set User Keywords
+
+-   **URL:** `/keywords`
+-   **Method:** `POST`
+-   **Request Body:**
+    ```json
+    {
+        "username": "testuser",
+        "keywords": ["new_keyword1", "new_keyword2"]
+    }
+    ```
+-   **Success Response:**
+    ```json
+    {
+        "success": true
+    }
+    ```
+
+### Get User's Read Papers
+
+-   **URL:** `/users/read_papers`
+-   **Method:** `GET`
+-   **Query Parameters:**
+    -   `username`: string
+-   **Success Response:**
+    ```json
+    {
+        "arxiv_ids": ["2301.00001", "2301.00002"]
+    }
+    ```
+
+### Set User's Read Papers
+
+-   **URL:** `/users/read_papers`
+-   **Method:** `POST`
+-   **Request Body:**
+    ```json
+    {
+        "username": "testuser",
+        "arxiv_ids": ["2301.00001", "2301.00002", "2301.00003"]
+    }
+    ```
+-   **Success Response:**
+    ```json
+    {
+        "success": true
+    }
+    ```
+
+### Get User's Favorite Papers
+
+-   **URL:** `/users/favorite_papers`
+-   **Method:** `GET`
+-   **Query Parameters:**
+    -   `username`: string
+-   **Success Response:**
+    ```json
+    {
+        "arxiv_ids": ["2301.00004"]
+    }
+    ```
+
+### Set User's Favorite Papers
+
+-   **URL:** `/users/favorite_papers`
+-   **Method:** `POST`
+-   **Request Body:**
+    ```json
+    {
+        "username": "testuser",
+        "arxiv_ids": ["2301.00004", "2301.00005"]
+    }
+    ```
+-   **Success Response:**
+    ```json
+    {
+        "success": true
+    }
+    ```

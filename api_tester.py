@@ -101,7 +101,9 @@ def test_set_favorite_papers(username, favorite_paper_ids):
     payload = {"username": username, "arxiv_ids": favorite_paper_ids}
     response = requests.post(url, json=payload)
     if response.status_code == 200:
-        print(f"POST /users/favorite_papers for {username} successful:", response.json())
+        print(
+            f"POST /users/favorite_papers for {username} successful:", response.json()
+        )
     else:
         print(
             f"POST /users/favorite_papers for {username} failed with status code:",
@@ -123,22 +125,22 @@ def test_analyze_paper(arxiv_id: str, section: str):
 
 
 if __name__ == "__main__":
-    #test_get_users()
+    # test_get_users()
 
-    #start_time = int(datetime(2020, 1, 1).timestamp())
-    #end_time = int(datetime(2025, 3, 1).timestamp())
-    #test_post_query(
+    # start_time = int(datetime(2020, 1, 1).timestamp())
+    # end_time = int(datetime(2025, 3, 1).timestamp())
+    # test_post_query(
     #    ["large language model", "reasoning", "reinforcement learning"],
     #    start_time,
     #    end_time,
-    #)
+    # )
 
-    #test_get_keywords("liziheng")
-    #test_post_keywords("arkcia", ["meta-learning", "Function Vector"])
+    # test_get_keywords("liziheng")
+    # test_post_keywords("arkcia", ["meta-learning", "Function Vector"])
 
-    #test_set_read_papers("liziheng", ["2311.00001", "2311.00002"])
-    #test_get_read_papers("liziheng")
-    #test_set_favorite_papers("liziheng", ["2311.00001", "2311.00002"])
-    #test_get_favorite_papers("liziheng")
+    # test_set_read_papers("liziheng", ["2311.00001", "2311.00002"])
+    # test_get_read_papers("liziheng")
+    # test_set_favorite_papers("liziheng", ["2311.00001", "2311.00002"])
+    # test_get_favorite_papers("liziheng")
 
     test_analyze_paper("2506.02208", "method")

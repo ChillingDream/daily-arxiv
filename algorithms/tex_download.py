@@ -6,6 +6,7 @@ import tempfile
 
 import requests
 
+
 def download_arxiv_source(arxiv_id: str) -> bytes:
     """
     通过 arXiv 的 e-print 接口下载源代码（tar.gz），返回二进制内容。
@@ -25,14 +26,14 @@ def extract_tarball_to_dir(tar_bytes: bytes, extract_dir: str) -> None:
     将 bytes 格式的 tar.gz 写到临时文件，然后解压到 extract_dir。
     """
     # 先把 bytes 写入一个临时文件
-    os.makedirs(os.path.join('./tmp', extract_dir), exist_ok=True)
-    tmp_tar_path = os.path.join(os.path.join('./tmp', extract_dir), "source.tar.gz")
+    os.makedirs(os.path.join("./tmp", extract_dir), exist_ok=True)
+    tmp_tar_path = os.path.join(os.path.join("./tmp", extract_dir), "source.tar.gz")
     with open(tmp_tar_path, "wb") as f:
         f.write(tar_bytes)
 
     # 解压
     with tarfile.open(tmp_tar_path, "r:gz") as tf:
-        tf.extractall(path=os.path.join('./tmp', extract_dir))
+        tf.extractall(path=os.path.join("./tmp", extract_dir))
 
     # 删除临时 tar.gz
     os.remove(tmp_tar_path)
@@ -145,13 +146,22 @@ def extract_sections_from_tex(full_tex: str) -> dict:
     full_tex = "\n".join(tex_nocomment)
 
     # 2) 去除图片环境（如果有的话）
-    full_tex = re.sub(r"\\begin\{figure\}.*?\\end\{figure\}", "", full_tex, flags=re.DOTALL)
-    full_tex = re.sub(r"\\begin\{wrapfigure\}.*?\\end\{wrapfigure\}", "", full_tex, flags=re.DOTALL)
-    full_tex = re.sub(r"\\begin\{figure\*\}.*?\\end\{figure\*\}", "", full_tex, flags=re.DOTALL)
+    full_tex = re.sub(
+        r"\\begin\{figure\}.*?\\end\{figure\}", "", full_tex, flags=re.DOTALL
+    )
+    full_tex = re.sub(
+        r"\\begin\{wrapfigure\}.*?\\end\{wrapfigure\}", "", full_tex, flags=re.DOTALL
+    )
+    full_tex = re.sub(
+        r"\\begin\{figure\*\}.*?\\end\{figure\*\}", "", full_tex, flags=re.DOTALL
+    )
 
     # 3) 提取表格环境，以便按照引用分配的到各个section
     tables = {}
-    table_pattern = re.compile(r"\\begin\{table\}.*?\\end\{table\}|\\begin\{table\*\}.*?\\end\{table\*\}", re.DOTALL)
+    table_pattern = re.compile(
+        r"\\begin\{table\}.*?\\end\{table\}|\\begin\{table\*\}.*?\\end\{table\*\}",
+        re.DOTALL,
+    )
     for match in table_pattern.finditer(full_tex):
         table_content = match.group(0)
         # 使用表格的label作为 key
@@ -167,15 +177,21 @@ def extract_sections_from_tex(full_tex: str) -> dict:
     matches = list(sect_pattern.finditer(full_tex))
 
     # 5) 先初始化输出字典
-    sections = {"introduction": "", "method": "", "experiments": "", "related work": "", "full_tex": full_tex}
+    sections = {
+        "introduction": "",
+        "method": "",
+        "experiments": "",
+        "related work": "",
+        "full_tex": full_tex,
+    }
 
     # 辅助：把原始节名归一化到我们想要的 key
     def normalize_title(title: str) -> str:
         lt = title.strip().lower()
         if "introduction" in lt:
             return "introduction"
-        if 'related work' in lt:
-            return 'related work'
+        if "related work" in lt:
+            return "related work"
         if "method" in lt or "approach" in lt or "methodology" in lt:
             return "method"
         if "experiment" in lt or "result" in lt or "evaluation" in lt:
@@ -189,11 +205,11 @@ def extract_sections_from_tex(full_tex: str) -> dict:
     for idx, m in enumerate(matches):
         raw_title = m.group(1).strip()
         key = normalize_title(raw_title)
-        if key == 'unknown':
+        if key == "unknown":
             if not sections["introduction"] or sections["experiments"]:
                 continue
             else:
-                key = 'method'
+                key = "method"
 
         start_pos = m.end()
         # 下一个节的 pos 或全文末尾
@@ -205,13 +221,13 @@ def extract_sections_from_tex(full_tex: str) -> dict:
         # 切片时保留纯文本即可，不用保留 \section{…} 这一行
         content = full_tex[start_pos:end_pos].strip()
         if idx == len(matches) - 1:
-            content = content.split('\end{document}')[0].strip()  # 去掉文档末尾的内容
+            content = content.split("\end{document}")[0].strip()  # 去掉文档末尾的内容
         # 如果已经找到过同名节，就拼接（有些论文会把 Method 拆成几节）
         if sections[key]:
             sections[key] += "\n\n" + content
         else:
             sections[key] = content
-    
+
     # 7) 如果一节引用了表格，将对应表格内容添加节末尾
     for sec_key in sections:
         for label, table_content in tables.items():
@@ -229,7 +245,7 @@ def download_and_extract_tex(arxiv_id: str):
     # 1. 下载源代码 tar.gz
     tar_bytes = download_arxiv_source(arxiv_id)
     if not tar_bytes:
-        return 'download error'
+        return "download error"
 
     # 2. 解压到临时目录
     with tempfile.TemporaryDirectory() as tmpdir:
@@ -238,7 +254,7 @@ def download_and_extract_tex(arxiv_id: str):
         # 3. 找到主 .tex 文件
         main_tex = find_main_tex_file(tmpdir)
         if not main_tex:
-            raise 'main text not found'
+            raise "main text not found"
 
         # 4. 展开所有 \input / \include
         full_tex = inline_inputs(main_tex, tmpdir, seen=set())
@@ -251,8 +267,7 @@ def download_and_extract_tex(arxiv_id: str):
 if __name__ == "__main__":
     sections = download_and_extract_tex("2506.02208")
     print(sections["introduction"])
-    print('=' * 20)
+    print("=" * 20)
     print(sections["method"])
-    print('=' * 20)
+    print("=" * 20)
     print(sections["experiments"])
-    

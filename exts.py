@@ -8,7 +8,9 @@ with open("config.yaml", "r") as fp:
     config = yaml.safe_load(fp)
 
 mongo = PyMongo()
-llm_client = openai.OpenAI(base_url=config["llm_client"]["url"], api_key=config["llm_client"]["api_key"])
+llm_client = openai.OpenAI(
+    base_url=config["llm_client"]["url"], api_key=config["llm_client"]["api_key"]
+)
 llm_config = {
     "model": config["llm_client"]["model_name"],
     "max_tokens": 16384,

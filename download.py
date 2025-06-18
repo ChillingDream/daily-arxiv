@@ -58,12 +58,12 @@ def update(theday, start_id, max_result):
                     {"arxiv_id": id, "text": ET.tostring(child).decode("utf-8")}
                 )
 
-                title = ' '.join(child.find("title").text.strip().split())
+                title = " ".join(child.find("title").text.strip().split())
                 submitted_date = child.find("published").text
                 submitted_date = datetime.datetime.strptime(
                     submitted_date, "%Y-%m-%dT%H:%M:%SZ"
                 )
-                abstract = ' '.join(child.find("summary").text.strip().split())
+                abstract = " ".join(child.find("summary").text.strip().split())
                 authors = [au.find("name").text for au in child.findall("author")]
                 category = child.find("category")
                 category = child.find("category").attrib["term"]

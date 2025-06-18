@@ -54,22 +54,22 @@ class User(UserMixin):
             print(e)
             return False
         return True
-    
+
     def _get_read_paper_ids(self):
         if info := mongo.db.read_papers.find_one({"username": self.username}):
             return info.get("arxiv_ids", [])
         return []
-    
+
     def get_read_paper_ids(self):
         return self.read_paper_ids
-    
+
     def set_read_paper(self, paper_ids, increment=False):
         """
         Set the read paper IDs for the user.
         """
         if not isinstance(paper_ids, list):
             paper_ids = [paper_ids]
-        
+
         if increment:
             read_paper_ids = self.read_paper_ids
             for id in paper_ids:
@@ -77,7 +77,7 @@ class User(UserMixin):
                     read_paper_ids.append(id)
         else:
             read_paper_ids = paper_ids
-            
+
         mongo.db.read_papers.update_one(
             {"username": self.username},
             {"$set": {"arxiv_ids": read_paper_ids}},
@@ -85,7 +85,7 @@ class User(UserMixin):
         )
         self.read_paper_ids = read_paper_ids
         return True
-    
+
     def _get_favorite_paper_ids(self):
         """
         Get the favorite paper IDs for the user.
@@ -93,10 +93,10 @@ class User(UserMixin):
         if info := mongo.db.favorite_papers.find_one({"username": self.username}):
             return info.get("arxiv_ids", [])
         return []
-    
+
     def get_favorite_paper_ids(self):
         return self.favorite_paper_ids
-    
+
     def set_favorite_paper(self, paper_ids, increment=False):
         """
         Set the favorite paper IDs for the user.
@@ -111,7 +111,7 @@ class User(UserMixin):
                     favorite_paper_ids.append(id)
         else:
             favorite_paper_ids = paper_ids
-            
+
         mongo.db.favorite_papers.update_one(
             {"username": self.username},
             {"$set": {"arxiv_ids": favorite_paper_ids}},
@@ -122,8 +122,6 @@ class User(UserMixin):
 
 
 class PaperTex:
-    """
-    """
 
     def __init__(self, arxiv_id):
         self.arxiv_id = arxiv_id
@@ -134,11 +132,10 @@ class PaperTex:
         else:
             self.sections = download_and_extract_tex(arxiv_id)
             self.paraphrase = {}
-    
+
     def get_paraprhrase(self, section_name):
         """
         Get the paraphrase of a specific section.
         """
         if section_name in self.paraphrase:
             return self.paraphrase[section_name]
-        

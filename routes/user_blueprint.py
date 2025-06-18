@@ -58,4 +58,3 @@ def set_favorite_papers():
         success = user.set_favorite_paper(favorite_paper_ids)
         return jsonify({"success": success})
     return jsonify({"error": "User not found"}), 404
-

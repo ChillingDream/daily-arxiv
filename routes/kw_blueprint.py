@@ -10,7 +10,7 @@ kw_blueprint = Blueprint("kw_blueprint", __name__)
 def display_keywords():
     username = request.args.get("username")
     user = User.get(username)
-    return jsonify(user.get_keywords())
+    return jsonify({"keywords": user.get_keywords()})
 
 
 @kw_blueprint.route("/keywords", methods=["POST"])
