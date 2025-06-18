@@ -43,4 +43,4 @@ def analyze_paper():
     else:
         analysis = content["analysis"][section_name]
 
-    return jsonify({"anaysis": analysis}), 200
+    return jsonify({"analysis": analysis}), 200

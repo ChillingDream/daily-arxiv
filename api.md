@@ -53,7 +53,7 @@
     ```json
     {
         "arxiv_id": "2301.00001",
-        "section": "abstract"
+        "section": "full" | "intro" | "method" | "experiments"
     }
     ```
 -   **Success Response:**
@@ -62,6 +62,11 @@
         "analysis": "This is the analysis of the requested section."
     }
     ```
+-   **Failure Response:**
+    ```json
+    {
+        "error": "This is the error message."
+    }
 
 ## User-Specific Endpoints
 
