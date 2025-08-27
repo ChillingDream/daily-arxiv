@@ -1,5 +1,5 @@
-MONGO_URI: 'mongodb://localhost:21117/daily_arxiv'
+MONGO_URI: 'mongodb://localhost:31117/daily_arxiv'
 llm_client:
   url: https://api.uniapi.io/v1
-  api_key: 
-  model_name: deepseek-v3-0324
+  api_key: sk-VZuNOsiI0WrAp9l_tux8c0WL0ZCGw_DKzlbRkVVz8dXItbTpwz6ADVLiO-4
+  model_name: gpt-4.1

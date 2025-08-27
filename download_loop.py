@@ -1,8 +1,14 @@
+import yaml
 import datetime
 from download import update
 import schedule
 import logging
 import time
+
+from pymongo import MongoClient
+
+with open("config.yaml", "r") as fp:
+    config = yaml.safe_load(fp)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -10,12 +16,13 @@ logging.basicConfig(
     datefmt="[%Y-%m-%d %H:%M:%S]",
 )
 
-from exts import db
+client = MongoClient(config["MONGO_URI"])
+db = client.daily_arxiv
+max_result = 500
 
 
 def fetch_new():
     raw = db.raw_arxiv_data
-    max_result = 500
     if datetime.datetime.now().hour <= 2:
         theday = datetime.date.today() - datetime.timedelta(1)
     else:
@@ -33,18 +40,16 @@ def fetch_new():
     else:
         max_id = max_id_record["arxiv_id"]
 
-    try:
-        n_update = update(theday, max_id, max_result)
+    n_update = update(db, theday, max_id, max_result)
+    if n_update != 'failed':
         logging.info("sucess get %d papers from %s" % (n_update, max_id))
-    except Exception as e:
-        logging.info("Update failed")
-        print(e)
 
 
 for i in range(1, 24, 2):
     schedule.every().day.at("{:02}:00".format(i)).do(fetch_new)
 
 logging.info("Start!")
+fetch_new()
 while True:
     schedule.run_pending()
     time.sleep(60)

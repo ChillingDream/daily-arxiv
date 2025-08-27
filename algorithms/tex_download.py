@@ -182,7 +182,7 @@ def extract_sections_from_tex(full_tex: str) -> dict:
         "method": "",
         "experiments": "",
         "related work": "",
-        "full_tex": full_tex,
+        "full": full_tex,
     }
 
     # 辅助：把原始节名归一化到我们想要的 key

@@ -1,8 +1,14 @@
+import yaml
 import datetime
 from download import update
 import schedule
 import logging
 import time
+
+from pymongo import MongoClient
+
+with open("config.yaml", "r") as fp:
+    config = yaml.safe_load(fp)
 
 logging.basicConfig(
     level=logging.INFO,
@@ -10,12 +16,13 @@ logging.basicConfig(
     datefmt="[%Y-%m-%d %H:%M:%S]",
 )
 
-from exts import db
+client = MongoClient(config["MONGO_URI"])
+db = client.daily_arxiv
+max_result = 500
 
 
 def fetch_new():
     raw = db.raw_arxiv_data
-    max_result = 500
     theday = datetime.date.today() - datetime.timedelta(days=30)
     max_id_record = raw.find_one(
         {"arxiv_id": {"$regex": "^2409.*"}}, sort=[("arxiv_id", -1)]
